@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Dashboard{% endblock %} | Admin</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="dash-topbar">
+    <a class="brand" href="{{ url_for('dashboard_index') }}" style="font-weight:700; color:var(--primary-dark);">MyPortfolio Admin</a>
+    <div>
+      <span style="margin-right: 16px; color: var(--text-muted);">Halo, {{ session.get('username') }}</span>
+      <a href="{{ url_for('index') }}" class="btn btn-outline btn-small">Lihat Situs</a>
+      <a href="{{ url_for('logout') }}" class="btn btn-danger btn-small">Logout</a>
+    </div>
+  </div>
+
+  <div class="dash-layout">
+    <aside class="dash-sidebar">
+      <a href="{{ url_for('dashboard_index') }}" class="{{ 'active' if request.endpoint == 'dashboard_index' }}">Ringkasan</a>
+      <a href="{{ url_for('dashboard_projects') }}" class="{{ 'active' if request.endpoint in ['dashboard_projects', 'add_project', 'edit_project'] }}">Manajemen Proyek</a>
+      <a href="{{ url_for('dashboard_profile') }}" class="{{ 'active' if request.endpoint == 'dashboard_profile' }}">Manajemen Profil</a>
+      <a href="{{ url_for('dashboard_messages') }}" class="{{ 'active' if request.endpoint == 'dashboard_messages' }}">Kotak Masuk Pesan</a>
+    </aside>
+
+    <main class="dash-main">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% block dash_content %}{% endblock %}
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
