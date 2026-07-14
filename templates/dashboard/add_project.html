@@ -1,0 +1,35 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block title %}Tambah Proyek{% endblock %}
+
+{% block dash_content %}
+<h2>Tambah Proyek Baru</h2>
+
+<form class="form-card" method="POST" action="{{ url_for('add_project') }}" enctype="multipart/form-data" style="margin: 0;">
+  <div class="form-group">
+    <label for="title">Judul Proyek</label>
+    <input type="text" id="title" name="title" required>
+  </div>
+  <div class="form-group">
+    <label for="description">Deskripsi</label>
+    <textarea id="description" name="description" required></textarea>
+  </div>
+  <div class="form-group">
+    <label for="technologies">Teknologi (pisahkan dengan koma)</label>
+    <input type="text" id="technologies" name="technologies" placeholder="Flask, SQLite, Bootstrap">
+  </div>
+  <div class="form-group">
+    <label for="github_link">Link GitHub</label>
+    <input type="url" id="github_link" name="github_link" placeholder="https://github.com/...">
+  </div>
+  <div class="form-group">
+    <label for="live_link">Link Live Demo</label>
+    <input type="url" id="live_link" name="live_link" placeholder="https://...">
+  </div>
+  <div class="form-group">
+    <label for="image">Gambar Proyek (PNG/JPG/JPEG/GIF/WEBP, maks 5MB)</label>
+    <input type="file" id="image" name="image" accept=".png,.jpg,.jpeg,.gif,.webp">
+  </div>
+  <button type="submit" class="btn btn-primary" style="width: 100%;">Simpan Proyek</button>
+</form>
+{% endblock %}
