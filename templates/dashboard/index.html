@@ -1,0 +1,25 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block title %}Ringkasan{% endblock %}
+
+{% block dash_content %}
+<h2>Ringkasan Dashboard</h2>
+
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="stat-number">{{ total_projects }}</div>
+    <div class="stat-label">Total Proyek</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">{{ unread_messages }}</div>
+    <div class="stat-label">Pesan Belum Dibaca</div>
+  </div>
+</div>
+
+<h3>Shortcut</h3>
+<div class="shortcut-links">
+  <a href="{{ url_for('add_project') }}" class="btn btn-primary">+ Tambah Proyek</a>
+  <a href="{{ url_for('dashboard_messages') }}" class="btn btn-outline">Lihat Pesan Masuk</a>
+  <a href="{{ url_for('dashboard_profile') }}" class="btn btn-outline">Edit Profil</a>
+</div>
+{% endblock %}
