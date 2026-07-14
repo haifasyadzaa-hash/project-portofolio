@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Tentang Saya</h2>
+    <div class="about-grid">
+      <div>
+        <h3>Deskripsi</h3>
+        <p>{{ profile.about }}</p>
+
+        <h3>Pendidikan</h3>
+        <p>{{ profile.education or 'Belum ada data pendidikan.' }}</p>
+      </div>
+      <div>
+        <h3>Skill &amp; Keahlian</h3>
+        {% if skills %}
+          <div class="skill-list">
+            {% for skill in skills %}
+              <span class="tag">{{ skill.name }}</span>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="empty-state">Belum ada skill yang ditambahkan.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
