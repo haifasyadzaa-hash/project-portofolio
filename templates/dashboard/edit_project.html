@@ -1,0 +1,40 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block title %}Edit Proyek{% endblock %}
+
+{% block dash_content %}
+<h2>Edit Proyek</h2>
+
+<form class="form-card" method="POST" action="{{ url_for('edit_project', id=project.id) }}" enctype="multipart/form-data" style="margin: 0;">
+  <div class="form-group">
+    <label for="title">Judul Proyek</label>
+    <input type="text" id="title" name="title" value="{{ project.title }}" required>
+  </div>
+  <div class="form-group">
+    <label for="description">Deskripsi</label>
+    <textarea id="description" name="description" required>{{ project.description }}</textarea>
+  </div>
+  <div class="form-group">
+    <label for="technologies">Teknologi (pisahkan dengan koma)</label>
+    <input type="text" id="technologies" name="technologies" value="{{ project.technologies }}">
+  </div>
+  <div class="form-group">
+    <label for="github_link">Link GitHub</label>
+    <input type="url" id="github_link" name="github_link" value="{{ project.github_link }}">
+  </div>
+  <div class="form-group">
+    <label for="live_link">Link Live Demo</label>
+    <input type="url" id="live_link" name="live_link" value="{{ project.live_link }}">
+  </div>
+  <div class="form-group">
+    <label>Gambar Saat Ini</label>
+    <img class="table-thumb" style="width:120px; height:80px; margin-bottom:10px;"
+         src="{{ url_for('static', filename='uploads/' + project.image_file) if project.image_file != 'default.jpg' else url_for('static', filename='img_placeholder.png') }}"
+         onerror="this.style.visibility='hidden'"
+         alt="{{ project.title }}">
+    <label for="image">Ganti Gambar (kosongkan jika tidak ingin mengubah)</label>
+    <input type="file" id="image" name="image" accept=".png,.jpg,.jpeg,.gif,.webp">
+  </div>
+  <button type="submit" class="btn btn-primary" style="width: 100%;">Simpan Perubahan</button>
+</form>
+{% endblock %}
