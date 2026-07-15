@@ -1,0 +1,51 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block title %}Kotak Masuk Pesan{% endblock %}
+
+{% block dash_content %}
+<h2>Kotak Masuk Pesan</h2>
+
+{% if messages %}
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Nama</th>
+      <th>Email</th>
+      <th>Pesan</th>
+      <th>Tanggal</th>
+      <th>Status</th>
+      <th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for msg in messages %}
+    <tr>
+      <td>{{ msg.name }}</td>
+      <td>{{ msg.email }}</td>
+      <td>{{ msg.message[:80] }}{% if msg.message|length > 80 %}...{% endif %}</td>
+      <td>{{ msg.created_at.strftime('%d %b %Y %H:%M') }}</td>
+      <td>
+        {% if msg.is_read %}
+          <span class="badge badge-read">Sudah Dibaca</span>
+        {% else %}
+          <span class="badge badge-unread">Belum Dibaca</span>
+        {% endif %}
+      </td>
+      <td class="actions-cell">
+        {% if not msg.is_read %}
+        <form method="POST" action="{{ url_for('mark_message_read', id=msg.id) }}">
+          <button type="submit" class="btn btn-outline btn-small">Tandai Dibaca</button>
+        </form>
+        {% endif %}
+        <form class="confirm-delete" data-confirm-message="Hapus pesan dari '{{ msg.name }}'?" method="POST" action="{{ url_for('delete_message', id=msg.id) }}">
+          <button type="submit" class="btn btn-danger btn-small">Hapus</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty-state">Belum ada pesan masuk.</p>
+{% endif %}
+{% endblock %}
