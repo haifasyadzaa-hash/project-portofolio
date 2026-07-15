@@ -25,7 +25,7 @@
   <div class="form-group">
     <label>Foto Profil Saat Ini</label>
     <img class="table-thumb" style="width:90px; height:90px; border-radius:50%; margin-bottom:10px;"
-         src="{{ url_for('static', filename='uploads/' + profile.photo_file) if profile.photo_file != 'default-profile.jpg' else url_for('static', filename='img_placeholder.png') }}"
+         src="{{ url_for('static', filename='uploads/' + profile.photo_file) if profile.photo_file != 'default-profile.jpg' else url_for('static', filename='img_placeholder.svg') }}"
          onerror="this.style.visibility='hidden'"
          alt="{{ profile.name }}">
     <label for="photo">Ganti Foto Profil</label>

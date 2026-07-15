@@ -6,7 +6,7 @@
 <section class="hero">
   <div class="container">
     <img class="profile-photo"
-         src="{{ url_for('static', filename='uploads/' + profile.photo_file) if profile.photo_file != 'default-profile.jpg' else url_for('static', filename='img_placeholder.png') }}"
+         src="{{ url_for('static', filename='uploads/' + profile.photo_file) if profile.photo_file != 'default-profile.jpg' else url_for('static', filename='img_placeholder.svg') }}"
          onerror="this.style.display='none'"
          alt="{{ profile.name }}">
     <h1>{{ profile.name }}</h1>
@@ -26,7 +26,7 @@
       <div class="portfolio-grid">
         {% for project in projects %}
           <div class="project-card">
-            <img src="{{ url_for('static', filename='uploads/' + project.image_file) if project.image_file != 'default.jpg' else url_for('static', filename='img_placeholder.png') }}"
+            <img src="{{ url_for('static', filename='uploads/' + project.image_file) if project.image_file != 'default.jpg' else url_for('static', filename='img_placeholder.svg') }}"
                  onerror="this.style.display='none'"
                  alt="{{ project.title }}">
             <div class="project-card-body">

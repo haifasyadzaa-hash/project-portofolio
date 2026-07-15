@@ -29,7 +29,7 @@
   <div class="form-group">
     <label>Gambar Saat Ini</label>
     <img class="table-thumb" style="width:120px; height:80px; margin-bottom:10px;"
-         src="{{ url_for('static', filename='uploads/' + project.image_file) if project.image_file != 'default.jpg' else url_for('static', filename='img_placeholder.png') }}"
+         src="{{ url_for('static', filename='uploads/' + project.image_file) if project.image_file != 'default.jpg' else url_for('static', filename='img_placeholder.svg') }}"
          onerror="this.style.visibility='hidden'"
          alt="{{ project.title }}">
     <label for="image">Ganti Gambar (kosongkan jika tidak ingin mengubah)</label>

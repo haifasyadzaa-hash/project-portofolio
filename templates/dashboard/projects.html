@@ -24,7 +24,7 @@
     <tr>
       <td>
         <img class="table-thumb"
-             src="{{ url_for('static', filename='uploads/' + project.image_file) if project.image_file != 'default.jpg' else url_for('static', filename='img_placeholder.png') }}"
+             src="{{ url_for('static', filename='uploads/' + project.image_file) if project.image_file != 'default.jpg' else url_for('static', filename='img_placeholder.svg') }}"
              onerror="this.style.visibility='hidden'"
              alt="{{ project.title }}">
       </td>

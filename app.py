@@ -7,11 +7,13 @@ from werkzeug.utils import secure_filename
 from config import Config
 from models import db, User, Project, Message, Profile, Skill
 
-app = Flask(__name__, instance_path=os.path.abspath(os.path.dirname(__file__)))
-app.config.from_object(Config)
+# Tentukan base directory
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-# Pastikan instance folder ada
-os.makedirs(app.instance_path, exist_ok=True)
+app = Flask(__name__, 
+            template_folder=os.path.join(BASE_DIR, 'templates'),
+            static_folder=os.path.join(BASE_DIR, 'static'))
+app.config.from_object(Config)
 
 db.init_app(app)
 

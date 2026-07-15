@@ -6,7 +6,7 @@
 <section class="section">
   <div class="container" style="max-width: 800px;">
     <div class="detail-header">
-      <img src="{{ url_for('static', filename='uploads/' + project.image_file) if project.image_file != 'default.jpg' else url_for('static', filename='img_placeholder.png') }}"
+      <img src="{{ url_for('static', filename='uploads/' + project.image_file) if project.image_file != 'default.jpg' else url_for('static', filename='img_placeholder.svg') }}"
            onerror="this.style.display='none'"
            alt="{{ project.title }}">
     </div>
