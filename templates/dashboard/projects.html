@@ -1,0 +1,47 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block title %}Manajemen Proyek{% endblock %}
+
+{% block dash_content %}
+<div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 20px;">
+  <h2 style="margin:0;">Manajemen Proyek</h2>
+  <a href="{{ url_for('add_project') }}" class="btn btn-primary">+ Tambah Proyek</a>
+</div>
+
+{% if projects %}
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Gambar</th>
+      <th>Judul</th>
+      <th>Teknologi</th>
+      <th>Dibuat</th>
+      <th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for project in projects %}
+    <tr>
+      <td>
+        <img class="table-thumb"
+             src="{{ url_for('static', filename='uploads/' + project.image_file) if project.image_file != 'default.jpg' else url_for('static', filename='img_placeholder.png') }}"
+             onerror="this.style.visibility='hidden'"
+             alt="{{ project.title }}">
+      </td>
+      <td>{{ project.title }}</td>
+      <td>{{ project.technologies }}</td>
+      <td>{{ project.created_at.strftime('%d %b %Y') }}</td>
+      <td class="actions-cell">
+        <a href="{{ url_for('edit_project', id=project.id) }}" class="btn btn-outline btn-small">Edit</a>
+        <form class="confirm-delete" data-confirm-message="Hapus proyek '{{ project.title }}'?" method="POST" action="{{ url_for('delete_project', id=project.id) }}">
+          <button type="submit" class="btn btn-danger btn-small">Hapus</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty-state">Belum ada proyek. Klik "Tambah Proyek" untuk memulai.</p>
+{% endif %}
+{% endblock %}
