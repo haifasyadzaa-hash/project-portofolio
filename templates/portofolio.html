@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Portofolio{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Portofolio</h2>
+
+    {% if projects %}
+      <div class="portfolio-grid">
+        {% for project in projects %}
+          <div class="project-card">
+            <img src="{{ url_for('static', filename='uploads/' + project.image_file) if project.image_file != 'default.jpg' else url_for('static', filename='img_placeholder.png') }}"
+                 onerror="this.style.display='none'"
+                 alt="{{ project.title }}">
+            <div class="project-card-body">
+              <h3>{{ project.title }}</h3>
+              <p>{{ project.description[:120] }}{% if project.description|length > 120 %}...{% endif %}</p>
+              {% if project.tech_list() %}
+                <div class="tech-tags">
+                  {% for tech in project.tech_list() %}
+                    <span class="tag">{{ tech }}</span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+              <a href="{{ url_for('project_detail', id=project.id) }}" class="btn btn-primary btn-small">Lihat Detail</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-state">Belum ada proyek. Tambahkan dari dashboard.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
