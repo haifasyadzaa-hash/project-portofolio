@@ -1,0 +1,67 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block title %}Manajemen Profil{% endblock %}
+
+{% block dash_content %}
+<h2>Manajemen Profil</h2>
+
+<form class="form-card" method="POST" action="{{ url_for('dashboard_profile') }}" enctype="multipart/form-data" style="margin: 0 0 32px;">
+  <div class="form-group">
+    <label for="name">Nama</label>
+    <input type="text" id="name" name="name" value="{{ profile.name }}" required>
+  </div>
+  <div class="form-group">
+    <label for="headline">Headline / Profesi</label>
+    <input type="text" id="headline" name="headline" value="{{ profile.headline }}">
+  </div>
+  <div class="form-group">
+    <label for="about">Deskripsi About</label>
+    <textarea id="about" name="about">{{ profile.about }}</textarea>
+  </div>
+  <div class="form-group">
+    <label for="education">Pendidikan</label>
+    <textarea id="education" name="education">{{ profile.education }}</textarea>
+  </div>
+  <div class="form-group">
+    <label>Foto Profil Saat Ini</label>
+    <img class="table-thumb" style="width:90px; height:90px; border-radius:50%; margin-bottom:10px;"
+         src="{{ url_for('static', filename='uploads/' + profile.photo_file) if profile.photo_file != 'default-profile.jpg' else url_for('static', filename='img_placeholder.png') }}"
+         onerror="this.style.visibility='hidden'"
+         alt="{{ profile.name }}">
+    <label for="photo">Ganti Foto Profil</label>
+    <input type="file" id="photo" name="photo" accept=".png,.jpg,.jpeg,.gif,.webp">
+  </div>
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" value="{{ profile.email }}">
+  </div>
+  <div class="form-group">
+    <label for="github_url">Link GitHub</label>
+    <input type="url" id="github_url" name="github_url" value="{{ profile.github_url }}">
+  </div>
+  <div class="form-group">
+    <label for="linkedin_url">Link LinkedIn</label>
+    <input type="url" id="linkedin_url" name="linkedin_url" value="{{ profile.linkedin_url }}">
+  </div>
+  <button type="submit" class="btn btn-primary" style="width: 100%;">Simpan Profil</button>
+</form>
+
+<h3>Skill / Keahlian</h3>
+<div class="skill-list" style="margin-bottom: 20px;">
+  {% for skill in skills %}
+    <span class="skill-chip">
+      {{ skill.name }}
+      <form method="POST" action="{{ url_for('delete_skill', id=skill.id) }}" style="display:inline;">
+        <button type="submit" title="Hapus skill">&times;</button>
+      </form>
+    </span>
+  {% else %}
+    <span class="empty-state">Belum ada skill.</span>
+  {% endfor %}
+</div>
+
+<form method="POST" action="{{ url_for('add_skill') }}" style="display:flex; gap:10px; max-width: 420px;">
+  <input type="text" name="skill_name" placeholder="Nama skill baru" required style="flex:1; padding:10px 12px; border:1.5px solid var(--border); border-radius:8px;">
+  <button type="submit" class="btn btn-primary">Tambah</button>
+</form>
+{% endblock %}
