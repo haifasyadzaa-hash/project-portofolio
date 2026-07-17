@@ -6,7 +6,7 @@
 <section class="hero">
   <div class="container">
     <img class="profile-photo"
-         src="{{ url_for('static', filename='uploads/' + profile.photo_file) if profile.photo_file != 'default-profile.jpg' else url_for('static', filename='img_placeholder.svg') }}"
+         src="{{ photo_url(profile.photo_file) }}"
          onerror="this.style.display='none'"
          alt="{{ profile.name }}">
     <h1>{{ profile.name }}</h1>
