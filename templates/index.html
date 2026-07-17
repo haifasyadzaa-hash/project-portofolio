@@ -13,7 +13,7 @@
     <p class="headline">{{ profile.headline }}</p>
     <p class="about-summary">{{ profile.about[:220] }}{% if profile.about|length > 220 %}...{% endif %}</p>
     <div class="hero-actions">
-      <a href="{{ url_for('portfolio') }}" class="btn btn-primary">Lihat Portofolio</a>
+      <a href="{{ url_for('portfolio') }}" class="btn btn-primary">Lihat Portfolio</a>
       <a href="{{ url_for('contact') }}" class="btn btn-outline">Hubungi Saya</a>
     </div>
   </div>
