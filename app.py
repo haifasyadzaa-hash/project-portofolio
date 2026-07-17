@@ -17,6 +17,16 @@ app.config.from_object(Config)
 
 db.init_app(app)
 
+# Supabase Storage client (dipakai kalau SUPABASE_URL & SUPABASE_KEY di-set,
+# misal saat deploy ke Vercel di mana disk lokal read-only)
+supabase_client = None
+if app.config.get('SUPABASE_URL') and app.config.get('SUPABASE_KEY'):
+    try:
+        from supabase import create_client
+        supabase_client = create_client(app.config['SUPABASE_URL'], app.config['SUPABASE_KEY'])
+    except Exception as e:
+        app.logger.error(f"Gagal inisialisasi Supabase client: {e}")
+
 
 # ---------------------------------------------------------------------------
 # Helper
@@ -27,15 +37,57 @@ def allowed_file(filename):
         filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 
+def photo_url(photo_file):
+    """Resolve URL foto profil: bisa URL penuh (Supabase), nama file lokal, atau default."""
+    if not photo_file or photo_file == 'default-profile.jpg':
+        return url_for('static', filename='img_placeholder.svg')
+    if photo_file.startswith('http://') or photo_file.startswith('https://'):
+        return photo_file
+    return url_for('static', filename='uploads/' + photo_file)
+
+
+app.jinja_env.globals['photo_url'] = photo_url
+
+
 def save_upload(file_storage):
-    """Simpan file upload ke folder static/uploads dan kembalikan nama filenya."""
-    if file_storage and file_storage.filename and allowed_file(file_storage.filename):
-        filename = secure_filename(file_storage.filename)
-        # tambahkan prefix agar nama file tidak bentrok
-        unique_name = f"{os.urandom(4).hex()}_{filename}"
+    """Simpan file upload. Pakai Supabase Storage kalau dikonfigurasi (mis. di Vercel),
+    kalau tidak fallback ke disk lokal (folder static/uploads, untuk dev di laptop).
+    Return: URL publik (Supabase) atau nama file lokal, atau None kalau gagal."""
+    if not (file_storage and file_storage.filename and allowed_file(file_storage.filename)):
+        return None
+
+    filename = secure_filename(file_storage.filename)
+    # potong nama file asli supaya prefix + nama tidak pernah lewat batas kolom DB
+    name_part, ext = os.path.splitext(filename)
+    name_part = name_part[:60]
+    filename = f"{name_part}{ext}"
+    unique_name = f"{os.urandom(4).hex()}_{filename}"
+
+    if supabase_client:
+        try:
+            file_bytes = file_storage.read()
+            content_type = file_storage.mimetype or 'application/octet-stream'
+            bucket = app.config['SUPABASE_BUCKET']
+            supabase_client.storage.from_(bucket).upload(
+                unique_name,
+                file_bytes,
+                {"content-type": content_type}
+            )
+            public_url = supabase_client.storage.from_(bucket).get_public_url(unique_name)
+            return public_url
+        except Exception as e:
+            app.logger.error(f"Gagal upload ke Supabase Storage: {e}")
+            flash(f'Gagal menyimpan foto ke storage: {e}', 'error')
+            return None
+
+    # Fallback: simpan ke disk lokal (hanya untuk development lokal)
+    try:
         file_storage.save(os.path.join(app.config['UPLOAD_FOLDER'], unique_name))
         return unique_name
-    return None
+    except OSError as e:
+        app.logger.error(f"Gagal menyimpan file upload: {e}")
+        flash(f'Gagal menyimpan foto: {e}', 'error')
+        return None
 
 
 def login_required(view_func):
@@ -247,8 +299,14 @@ def dashboard_profile():
         if new_photo:
             profile.photo_file = new_photo
 
-        db.session.commit()
-        flash('Profil berhasil diperbarui.', 'success')
+        try:
+            db.session.commit()
+            flash('Profil berhasil diperbarui.', 'success')
+        except Exception as e:
+            db.session.rollback()
+            app.logger.error(f"Gagal simpan profil ke DB: {e}")
+            flash(f'Gagal menyimpan profil ke database: {e}', 'error')
+
         return redirect(url_for('dashboard_profile'))
 
     return render_template('dashboard/profile.html', profile=profile, skills=skills)
@@ -306,7 +364,6 @@ def delete_message(id):
 # ---------------------------------------------------------------------------
 
 def seed_initial_data():
-    """Membuat akun admin default & profil kosong jika database masih baru."""
     if User.query.count() == 0:
         admin = User(username=app.config['DEFAULT_ADMIN_USERNAME'])
         admin.set_password(app.config['DEFAULT_ADMIN_PASSWORD'])
