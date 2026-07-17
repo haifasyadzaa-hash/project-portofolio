@@ -7,7 +7,6 @@ from werkzeug.utils import secure_filename
 from config import Config
 from models import db, User, Project, Message, Profile, Skill
 
-# Tentukan base directory
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__, 
@@ -17,8 +16,6 @@ app.config.from_object(Config)
 
 db.init_app(app)
 
-# Supabase Storage client (dipakai kalau SUPABASE_URL & SUPABASE_KEY di-set,
-# misal saat deploy ke Vercel di mana disk lokal read-only)
 supabase_client = None
 if app.config.get('SUPABASE_URL') and app.config.get('SUPABASE_KEY'):
     try:
@@ -38,7 +35,6 @@ def allowed_file(filename):
 
 
 def photo_url(photo_file):
-    """Resolve URL foto profil: bisa URL penuh (Supabase), nama file lokal, atau default."""
     if not photo_file or photo_file == 'default-profile.jpg':
         return url_for('static', filename='img_placeholder.svg')
     if photo_file.startswith('http://') or photo_file.startswith('https://'):
@@ -50,14 +46,10 @@ app.jinja_env.globals['photo_url'] = photo_url
 
 
 def save_upload(file_storage):
-    """Simpan file upload. Pakai Supabase Storage kalau dikonfigurasi (mis. di Vercel),
-    kalau tidak fallback ke disk lokal (folder static/uploads, untuk dev di laptop).
-    Return: URL publik (Supabase) atau nama file lokal, atau None kalau gagal."""
     if not (file_storage and file_storage.filename and allowed_file(file_storage.filename)):
         return None
 
     filename = secure_filename(file_storage.filename)
-    # potong nama file asli supaya prefix + nama tidak pernah lewat batas kolom DB
     name_part, ext = os.path.splitext(filename)
     name_part = name_part[:60]
     filename = f"{name_part}{ext}"
@@ -80,7 +72,6 @@ def save_upload(file_storage):
             flash(f'Gagal menyimpan foto ke storage: {e}', 'error')
             return None
 
-    # Fallback: simpan ke disk lokal (hanya untuk development lokal)
     try:
         file_storage.save(os.path.join(app.config['UPLOAD_FOLDER'], unique_name))
         return unique_name
