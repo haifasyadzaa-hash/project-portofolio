@@ -52,7 +52,7 @@ class Profile(db.Model):
     headline = db.Column(db.String(200), default='Web Developer')
     about = db.Column(db.Text, default='Tuliskan deskripsi tentang diri Anda di sini.')
     education = db.Column(db.Text, default='')
-    photo_file = db.Column(db.String(120), default='default-profile.jpg')
+    photo_file = db.Column(db.String(500), default='default-profile.jpg')
     email = db.Column(db.String(120), default='email@example.com')
     github_url = db.Column(db.String(200), default='')
     linkedin_url = db.Column(db.String(200), default='')
