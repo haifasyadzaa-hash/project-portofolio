@@ -6,7 +6,6 @@ db = SQLAlchemy()
 
 
 class User(db.Model):
-    """Akun admin untuk login ke dashboard."""
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
@@ -19,7 +18,6 @@ class User(db.Model):
 
 
 class Project(db.Model):
-    """Data proyek/karya yang ditampilkan di halaman Portofolio."""
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), nullable=False)
     description = db.Column(db.Text, nullable=False)
@@ -36,7 +34,6 @@ class Project(db.Model):
 
 
 class Message(db.Model):
-    """Pesan yang dikirim pengunjung melalui form kontak."""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), nullable=False)
@@ -46,7 +43,6 @@ class Message(db.Model):
 
 
 class Profile(db.Model):
-    """Data profil pemilik portofolio (hanya ada 1 baris)."""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), default='Nama Anda')
     headline = db.Column(db.String(200), default='Web Developer')
@@ -59,6 +55,5 @@ class Profile(db.Model):
 
 
 class Skill(db.Model):
-    """Daftar skill/keahlian yang ditampilkan di halaman About."""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
